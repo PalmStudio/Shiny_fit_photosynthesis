@@ -158,7 +158,7 @@ server<-function(input, output,session){
       for (i in raw_data){
         sub=import.curves(filename =paste0('./Data/',i))%>%
           mutate(id=str_remove(string = i,'.csv'))
-        res=rbind(res,sub)
+        res=dplyr::bind_rows(res,sub)
       }
       res=res%>%
         mutate(plant=str_sub(string = id,start = 0,end = 2),
@@ -178,7 +178,7 @@ server<-function(input, output,session){
     
     curvId=res%>%
       filter(curve==curve_input)%>%
-      select(id,Time,Comment,curve,A,gs,ci,PARtop,VPD_kPa,Tleaf,ca)
+      select(id,Time,Comment,curve,A,gs,ci,PARtop, AVPD,VPD_kPa, Tleaf,ca)
     
     return(curvId)
   })
@@ -268,10 +268,12 @@ server<-function(input, output,session){
       ylab='Assimilation  (micromol.m-2.s-1)'
     }
     if(type=='Rh Curve'){
-      x_var='VPD_kPa'
+      # x_var='VPD_kPa'
+      x_var='AVPD'
       y_var='gs'
       y_var2='A'
-      xlab='Vapor pressure deficit (kPa)' 
+      # xlab='Vapor pressure deficit (kPa)' 
+      xlab='A/(ca*sqrt(VPD))'
       ylab='Stomatal conductance  (mol.m-2.s-1)'
     }
     
@@ -355,7 +357,7 @@ server<-function(input, output,session){
   
   FitParams = eventReactive(input$addFit,{
     cleanFit<-cleanFit()
-    all_params <<- rbind(all_params,cleanFit$params)
+    all_params <<- dplyr::bind_rows(all_params,cleanFit$params)
     return(all_params)
   })
   
@@ -380,7 +382,7 @@ server<-function(input, output,session){
                Comment=unique(curvId$Comment),
                curve=unique(curvId$curve))%>%
         select(id,Comment,curve,x,y)
-      d_save <<- rbind(d_save,d)
+      d_save <<- dplyr::bind_rows(d_save,d)
       
       # d_save=d_save%>%
       #   group_by(id,Comment,curve,x,y)%>%
@@ -417,16 +419,17 @@ server<-function(input, output,session){
       }
     }
     if(unique(curvId$Comment)=='Rh Curve'){
-      x_var_cl='VPD_kPa'
+      x_var_cl='AVPD'
       y_var_cl='gs'
-      xlab='Vapor pressure deficit (kPa)' 
+      # xlab='Vapor pressure deficit (kPa)' 
+      xlab='A/(ca*sqrt(VPD))'
       ylab='Stomatal conductance  (mol.m-2.s-1)'
       if(nrow(d_save)>0){
         sub=d_save%>%
           filter(curve==unique(curvId$curve))%>%
-          mutate(VPD_kPa=x,
+          mutate(AVPD=x,
                  gs=y)%>%
-          select(curve,VPD_kPa,gs)
+          select(curve,AVPD,gs)
         
         out=merge(sub,curvId,all.x=T)
       }
@@ -467,7 +470,7 @@ server<-function(input, output,session){
                  Tleaf=Tleaf,
                  Photo=get(y_var_cl),
                  PARi=PARtop)%>%
-          select(CO2S,Ci,Tleaf,Photo,PARi)
+          select(CO2S,Ci,Tleaf,Photo,PARi,VPD_kPa)
         
         ftpu <- fitaci(fitAci, fitTPU=TRUE, PPFD=1800, Tcorrect=TRUE)
         
@@ -509,7 +512,7 @@ server<-function(input, output,session){
                  Tleaf=Tleaf,
                  Photo=get(y_var_cl),
                  PARi=PARtop)%>%
-          select(ca,VPD_kPa,A,gs)
+          select(ca, VPD_kPa,AVPD, A,gs)
         
         ## plantecophys fonction
         Medlyn <-fitBB(data = fitgs,gsmodel = 'BBOpti',varnames = list(ALEAF = "A", GS = "gs", VPD = "VPD_kPa",Ca = "ca"),fitg0=T)
@@ -540,8 +543,8 @@ server<-function(input, output,session){
         
         gr_clean=ggplotly(fitgs%>%
                             ggplot()+
-                            geom_line(aes(x=VPD_kPa,y=gs_sim,col='gs sim'),lwd=1.2)+
-                            geom_point(aes(x=VPD_kPa,y=gs,shape='Obs'))+
+                            geom_line(aes(x=AVPD,y=gs_sim,col='gs sim'),lwd=1.2)+
+                            geom_point(aes(x=AVPD,y=gs,shape='Obs'))+
                             ylab(ylab)+
                             xlab(xlab)+
                             xlim(range(curve_out[,x_var_cl]))+
