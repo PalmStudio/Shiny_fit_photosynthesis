@@ -40,4 +40,4 @@ rsconnect/
 Data/
 screenshots/
 *.csv
-^test.*\.R
+^test.*R$
