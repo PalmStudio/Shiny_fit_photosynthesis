@@ -22,7 +22,7 @@ lapply(packs, InstIfNec)
 import.curves=function(filename,last_point=T){
   # filename='./Data/P5F70323.csv'
   head=str_split(string = readLines(con =filename ,n = 1),pattern = ';')[[1]]
-  don_raw=read.csv(file = filename,sep=';',header=F,dec='.',skip =2)
+  don_raw = data.table::fread(filename, header = FALSE, skip =2, data.table = FALSE)
   colnames(don_raw)=head
   
   colnames(don_raw)[colnames(don_raw) %in% c('Tmin','Ttop')]='Tmin'
