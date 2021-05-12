@@ -267,14 +267,14 @@ server<-function(input, output,session){
       xlab='PPFD  (micromol.m-2.s-1)'
       ylab='Assimilation  (micromol.m-2.s-1)'
     }
-    if(type=='Rh Curve'){
+    if(type=='Rh Curve' | type=='Temp Curve'){
       # x_var='VPD_kPa'
       x_var='AVPD'
       y_var='gs'
       y_var2='A'
       # xlab='Vapor pressure deficit (kPa)' 
       xlab='A/(ca*sqrt(VPD))'
-      ylab='Stomatal conductance  (mol.m-2.s-1)'
+      ylab='Stomatal conductance  (mol[H20].m-2.s-1)'
     }
     
     if (!is.null(x_var) & !is.null(y_var)){
@@ -418,12 +418,12 @@ server<-function(input, output,session){
         out=merge(sub,curvId,all.x=T)
       }
     }
-    if(unique(curvId$Comment)=='Rh Curve'){
+    if(unique(curvId$Comment)=='Rh Curve' | unique(curvId$Comment)=='Temp Curve'){
       x_var_cl='AVPD'
       y_var_cl='gs'
       # xlab='Vapor pressure deficit (kPa)' 
       xlab='A/(ca*sqrt(VPD))'
-      ylab='Stomatal conductance  (mol.m-2.s-1)'
+      ylab='Stomatal conductance  (mol[H20].m-2.s-1)'
       if(nrow(d_save)>0){
         sub=d_save%>%
           filter(curve==unique(curvId$curve))%>%
@@ -503,7 +503,7 @@ server<-function(input, output,session){
                             ylim(range(curve_out[,y_var_cl])))
       }
       
-      if (unique(curvId$Comment)=='Rh Curve'){
+      if (unique(curvId$Comment)=='Rh Curve' | unique(curvId$Comment)=='Temp Curve'){
         
         fitgs=curve_out%>%
           filter(outliers=='valid')%>%
