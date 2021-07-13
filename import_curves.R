@@ -20,7 +20,7 @@ lapply(packs, InstIfNec)
 #'
 #' @examples
 import.curves=function(filename,last_point=T){
-  # filename='./Data/P5F70323.csv'
+  # filename='../0-data/Walz/P5F70427.csv'
   head=str_split(string = readLines(con =filename ,n = 1),pattern = ';')[[1]]
   don_raw = data.table::fread(filename, header = FALSE, skip =2, data.table = FALSE)
   colnames(don_raw)=head
@@ -50,7 +50,7 @@ import.curves=function(filename,last_point=T){
       filter(!is.na(Comment))
   }
   
-  if(last_point==T){
+  if(last_point==T & ('ETR' %in% colnames(don_raw))){
     don=don%>%
       filter(!is.na(ETR))
     }
@@ -58,7 +58,7 @@ import.curves=function(filename,last_point=T){
   return(don)
 }
 
- # don=import.curves(filename='./Data/P1F20129.csv')
+ # don=import.curves(filename='./0-data/P1F20129.csv')
  # curves=unique(don$Comment)
  # 
  # 

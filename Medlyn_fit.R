@@ -65,7 +65,7 @@ fit.Medlyn=function(data,g0_start=0.0033,g1_start=12.5){
 
 # source(file = 'import_curves.R')
 
-# test=import.curves(filename='./Data/P1F20129.csv')%>%
+# test=import.curves(filename='./0-data/P1F20129.csv')%>%
 #   filter(Comment=='Rh Curve')
 # 
 # out=fit.Medlyn(data = test)

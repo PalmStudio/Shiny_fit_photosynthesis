@@ -95,7 +95,7 @@ server<-function(input, output,session){
   source(file='Medlyn_fit.R')
   
   observe({
-    files <- list.files('./Data/')
+    files <- list.files('./0-data/')
     
     updateSelectizeInput(session = session, inputId = 'select_input', choices = files)
   })
@@ -156,7 +156,7 @@ server<-function(input, output,session){
       
       res=NULL
       for (i in raw_data){
-        sub=import.curves(filename =paste0('./Data/',i))%>%
+        sub=import.curves(filename =paste0('./0-data/',i))%>%
           mutate(id=str_remove(string = i,'.csv'))
         res=dplyr::bind_rows(res,sub)
       }
