@@ -1,6 +1,6 @@
 # Load packages -----------------------------------------------------------
 
-packs <- c('data.table','shiny',"lubridate", "stringr", "ggplot2",'dplyr','viridis','plotly','tidyr','plantecophys','DT','scales')
+packs <- c('data.table','shiny',"lubridate", "stringr", "ggplot2",'dplyr','viridis','plotly','tidyr','plantecophys','DT','scales','shinythemes')
 InstIfNec<-function (pack) {
   if (!do.call(require,as.list(pack))) {
     do.call(install.packages,as.list(pack))  }
@@ -19,10 +19,11 @@ names(color_outputs)=c('valid','outlier')
 # names(colors_plant)=c("P1",'P2','P3','P5')
 
 # ui ----------------------------------------------------------------------
-ui<-fluidPage(
-  titlePanel("Gas exchange response curves"),
-  
-  sidebarLayout(
+ui<-
+  navbarPage(theme = shinytheme("united"),
+             title = "Gas exchange response curves",
+             sidebarLayout(
+               
     
     sidebarPanel(
       selectizeInput(inputId = 'select_input', label = 'Choose the files (in Data)', choices = '*', multiple = TRUE),
