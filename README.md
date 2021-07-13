@@ -1,2 +1,3 @@
 # ShinyResponseCurves
  
+shiny app to fit Farquhar and Medelyn model on response curves A-Ci or gs-VPD. Responses curves are stocked in data (0-data in root path) available in Alfreso PALMstudio. So far only data from WALZ gaz exchanger are available ( Licor 6800 data not yet availbale).The first panel allows the visualisation of responses curves according to plant and dates. The second panel alows to fit A-Ci curves or gs-VPD curvers with Farquahr/Medelyn model and can be loaded to the export table presneted in the third panel
